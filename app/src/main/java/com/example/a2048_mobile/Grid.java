@@ -3,23 +3,24 @@ package com.example.a2048_mobile;
 import java.util.Random;
 
 public class Grid {
-    private int row;
-    private int cols;
     public Box[][] Boxes;
     private int gridnum=2;
+    private int row;
+    private int col;
     private boolean isFirst=true;
-    private Random r;
     public boolean isGameOver=false;
+    private Random r;
     private int total=0;
 
-    public Grid(int row,int cols)
+
+    public Grid(int row,int col)
     {
         this.row = row < 4 ? 4 : row;
-        this.cols = cols < 4 ? 4 : cols;
-        Boxes = new Box[row][cols];
+        this.col = col < 4 ? 4 : col;
+        Boxes = new Box[row][col];
         for(int i=0;i<row;i++)
         {
-            for(int j=0;j<cols;j++)
+            for(int j=0;j<col;j++)
             {
                 Boxes[i][j]=new Box(i,j);
             }
@@ -42,7 +43,7 @@ public class Grid {
         this.Creat_RandomNum();
     }
 
-    public void Creat_RandomNum()//生成随机数
+    public void Creat_RandomNum()//生成随机数，仅开局时生成两个随机数（2或4)
     {
         int count = 0;
         if(isFirst)
@@ -57,7 +58,7 @@ public class Grid {
         for (int i = 0; i < count;)
         {
             int rr = r.nextInt(row);
-            int rc = r.nextInt(cols);
+            int rc = r.nextInt(col);
             if (Boxes[rr][rc].getNum() != 0)
             {
                 continue;
@@ -84,8 +85,9 @@ public class Grid {
         total += count;
     }
 
-    public void Move_Right()//向右划
+    public boolean Move_Right()//向右划
     {
+        //位置移动
         boolean changed = false;
         for(int i=0;i<Boxes.length;i++)
         {
@@ -96,7 +98,7 @@ public class Grid {
                 {
                     real = true;
                 }
-                    else
+                else
                 {
                     if(real==true)
                     {
@@ -110,6 +112,7 @@ public class Grid {
                 }
             }
         }
+        //合并数字
         for (int i = 0; i < Boxes.length; i++)
         {
             for (int j = Boxes[0].length - 1; j >0 ; j--)
@@ -123,17 +126,19 @@ public class Grid {
                     {
                         Boxes[i][ k].setNum(Boxes[i][ k - 1].getNum());
                     }
-                    Boxes[i][ 0].setNum(0);
+                    Boxes[i][0].setNum(0);
                 }
             }
         }
+        //生成新的随机数
         if (changed==true)
         {
             this.Creat_RandomNum();
         }
+        return changed;
     }
 
-    public void Move_Up()//向上划
+    public boolean Move_Up()//向上划
     {
         boolean changed = false;
         for (int i = 0; i < Boxes[0].length; i++)
@@ -159,6 +164,7 @@ public class Grid {
                 }
             }
         }
+
         for (int i = 0; i < Boxes[0].length; i++)
         {
             for (int j = 0; j < Boxes.length - 1; j++)
@@ -176,12 +182,15 @@ public class Grid {
                 }
             }
         }
+
         if (changed == true)
         {
             this.Creat_RandomNum();
         }
+        return changed;
     }
-    public void Move_Left()//向左划
+
+    public boolean Move_Left()//向左划
     {
         boolean changed = false;
         for (int i = 0; i < Boxes.length; i++)
@@ -207,6 +216,7 @@ public class Grid {
                 }
             }
         }
+
         for (int i = 0; i < Boxes.length; i++)
         {
             for (int j = 0; j < Boxes[0].length - 1; j++)
@@ -224,12 +234,15 @@ public class Grid {
                 }
             }
         }
+
         if (changed == true)
         {
             this.Creat_RandomNum();
         }
+        return changed;
     }
-    public void Move_Down()//向下划
+
+    public boolean Move_Down()//向下划
     {
         boolean changed = false;
         for (int i = 0; i < Boxes[0].length; i++)
@@ -255,6 +268,7 @@ public class Grid {
                 }
             }
         }
+
         for (int i = 0; i < Boxes[0].length; i++)
         {
             for (int j = Boxes.length - 1; j >0 ; j--)
@@ -272,14 +286,17 @@ public class Grid {
                 }
             }
         }
+
         if (changed == true)
         {
             this.Creat_RandomNum();
         }
+        return changed;
     }
+
     public void CheckGameisOver()//判断游戏是否结束
     {
-        if(total<row*cols)
+        if(total<row*col)
         {
             isGameOver = false;
             return;

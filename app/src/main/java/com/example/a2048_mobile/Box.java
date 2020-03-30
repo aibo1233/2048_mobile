@@ -2,41 +2,27 @@ package com.example.a2048_mobile;
 
 public class Box {
     private int rowIndex;
-    private int colsIndex;
+    private int colIndex;
     private int num;
 
-    public Box(int row,int cols)
+    public Box(int row,int col)
     {
         this.rowIndex=row;
-        this.colsIndex=cols;
+        this.colIndex=col;
         this.num=0;
     }
 
-    public void Reset()
-    {
-        this.num=0;
-    }
-    public int getRowIndex() {
-        return rowIndex;
-    }
+    public int getRowIndex() { return rowIndex; }
 
-    public void setRowIndex(int rowIndex) {
-        this.rowIndex = rowIndex;
-    }
+    public void setRowIndex(int rowIndex) { this.rowIndex = rowIndex; }
 
-    public int getColsIndex() {
-        return colsIndex;
-    }
+    public int getColsIndex() { return colIndex; }
 
-    public void setColsIndex(int colsIndex) {
-        this.colsIndex = colsIndex;
-    }
+    public void setColsIndex(int colsIndex) { this.colIndex = colsIndex; }
 
-    public int getNum() {
-        return num;
-    }
+    public void Reset() { this.num=0; }
 
-    public void setNum(int num) {
-        this.num = num;
-    }
+    public int getNum() { return num; }
+
+    public void setNum(int num) { this.num = num; }
 }

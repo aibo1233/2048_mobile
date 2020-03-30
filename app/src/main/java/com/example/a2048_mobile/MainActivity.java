@@ -2,21 +2,27 @@ package com.example.a2048_mobile;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.ScaleAnimation;
 
 public class MainActivity extends Activity {
+    Grid g;
     private TextView[][] txtTest;
-
+    private boolean changed=false;
     private float moveX;
     private float moveY;
     private float pressX;
     private float pressY;
-    Grid g;
+
 
     private void show()
     {
@@ -24,16 +30,97 @@ public class MainActivity extends Activity {
         {
             for (int j = 0; j < 4; j++)
             {
+                //改变数字
                 int nb=g.Boxes[i][j].getNum();
                 txtTest[i][j].setText(String.valueOf(nb));
+                //动画效果
+                AnimationSet animationSet = new AnimationSet(true);
+
+                //参数1：x轴的初始值
+
+                //参数2：x轴收缩后的值
+
+                //参数3：y轴的初始值
+
+                //参数4：y轴收缩后的值
+
+                //参数5：确定x轴坐标的类型
+
+                //参数6：x轴的值，0.5f表明是以自身这个控件的一半长度为x轴
+
+                //参数7：确定y轴坐标的类型
+
+                //参数8：y轴的值，0.5f表明是以自身这个控件的一半长度为x轴
+
+                ScaleAnimation scaleAnimation = new ScaleAnimation(
+
+                        1.0f, 1.08f,1.0f,1.08f,
+
+                        Animation.RELATIVE_TO_SELF,0.5f,
+
+                        Animation.RELATIVE_TO_SELF,0.5f);
+
+                scaleAnimation.setDuration(80);
+
+                animationSet.addAnimation(scaleAnimation);
+
+                txtTest[i][j].startAnimation(animationSet);
             }
         }
+
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                for (int i = 0; i < 4; i++)
+                {
+                    for (int j = 0; j < 4; j++)
+                    {
+                        //动画效果
+                        AnimationSet animationSet = new AnimationSet(true);
+
+                        //参数1：x轴的初始值
+
+                        //参数2：x轴收缩后的值
+
+                        //参数3：y轴的初始值
+
+                        //参数4：y轴收缩后的值
+
+                        //参数5：确定x轴坐标的类型
+
+                        //参数6：x轴的值，0.5f表明是以自身这个控件的一半长度为x轴
+
+                        //参数7：确定y轴坐标的类型
+
+                        //参数8：y轴的值，0.5f表明是以自身这个控件的一半长度为x轴
+
+                        ScaleAnimation scaleAnimation = new ScaleAnimation(
+
+                                1.08f, 1.0f,1.08f,1.0f,
+
+                                Animation.RELATIVE_TO_SELF,0.5f,
+
+                                Animation.RELATIVE_TO_SELF,0.5f);
+
+                        scaleAnimation.setDuration(80);
+
+                        animationSet.addAnimation(scaleAnimation);
+
+                        txtTest[i][j].startAnimation(animationSet);
+                    }
+                }
+            }
+        }, 80);//0.1秒后执行Runnable中的run方法
+
     }
+
     public void Reset(View view)
     {
         g.InitGrid();
         show();
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,30 +170,38 @@ public class MainActivity extends Activity {
                                 if (moveX-pressX > 0 && Math.abs(moveY - pressY) <Math.abs(moveX - pressX)) {
                                     //Log.i("message", "向右");
                                     //Toast.makeText(MainActivity.this, "Right",Toast.LENGTH_SHORT).show();
-                                    g.Move_Right();
+                                    changed=g.Move_Right();
                                 } else if (Math.abs(moveY - pressY) >Math.abs(moveX - pressX) && moveY - pressY < 0) {
                                     //Log.i("message", "向左");
                                     //Toast.makeText(MainActivity.this, "Up",Toast.LENGTH_SHORT).show();
-                                    g.Move_Up();
+                                    changed=g.Move_Up();
                                 }else if(moveX-pressX < 0 && Math.abs(moveY - pressY) <Math.abs(moveX - pressX))
                                 {
                                     //Toast.makeText(MainActivity.this, "Left",Toast.LENGTH_SHORT).show();
-                                    g.Move_Left();
+                                    changed=g.Move_Left();
                                 }
                                 else if(Math.abs(moveY - pressY) >Math.abs(moveX - pressX) && moveY - pressY > 0)
                                 {
                                     //Toast.makeText(MainActivity.this, "Down",Toast.LENGTH_SHORT).show();
-                                    g.Move_Down();
+                                    changed=g.Move_Down();
+                                }
+                                else
+                                {
+                                    changed=false;
+                                }
+                                if(changed==true)
+                                {
+                                    show();
+                                }
+                                //判断游戏是否结束
+                                g.CheckGameisOver();
+                                if(g.isGameOver==true)
+                                {
+                                    Toast.makeText(MainActivity.this, "GameOver.",Toast.LENGTH_SHORT).show();
                                 }
                                 break;
                             default:
                                 break;
-                        }
-                        show();
-                        g.CheckGameisOver();
-                        if(g.isGameOver==true)
-                        {
-                            Toast.makeText(MainActivity.this, "GameOver.",Toast.LENGTH_SHORT).show();
                         }
                         return true;
                     }
